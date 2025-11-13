@@ -1,4 +1,4 @@
-# everything hard coded, no room for adjustments, just to get something working first
+# more room for adjustments hopefully
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,10 +33,10 @@ def get_accuracy(predictions, Y):
 
 def init_params():
     # hidden layer 1
-    W1 = np.random.randn(256, 784) # 784 pixels in each image
+    W1 = np.random.randn(256, 784) * np.sqrt(2/784) # 784 pixels in each image
     b1 = np.zeros((256, 1))
     # hidden layer 2
-    W2 = np.random.randn(10, 256)
+    W2 = np.random.randn(10, 256) * np.sqrt(2/256)
     b2 = np.zeros((10, 1))
     return W1, b1, W2, b2
 
@@ -100,15 +100,15 @@ W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.1, 100)
 
 
 # using matplotlib to visualize examples of where model is failing
-Z1_dev, A1_dev, Z2_dev, A2_dev = forward_prop(X_dev, W1, b1, W2, b2)
-predictions_dev = get_predictions(A2_dev)
-incorrect_indices = np.where(predictions_dev != Y_dev)[0]
-num_incorrect_to_show = min(5, len(incorrect_indices))
-plt.figure(figsize=(10, 2))
-for i in range(num_incorrect_to_show):
-    idx = incorrect_indices[i]
-    plt.subplot(1, num_incorrect_to_show, i + 1)
-    plt.imshow(X_dev[:, idx].reshape(28, 28), cmap='gray')
-    plt.title(f'True: {Y_dev[idx]}, Pred: {predictions_dev[idx]}')
-    plt.axis('off')
-plt.show()
+# Z1_dev, A1_dev, Z2_dev, A2_dev = forward_prop(X_dev, W1, b1, W2, b2)
+# predictions_dev = get_predictions(A2_dev)
+# incorrect_indices = np.where(predictions_dev != Y_dev)[0]
+# num_incorrect_to_show = min(5, len(incorrect_indices))
+# plt.figure(figsize=(10, 2))
+# for i in range(num_incorrect_to_show):
+#     idx = incorrect_indices[i]
+#     plt.subplot(1, num_incorrect_to_show, i + 1)
+#     plt.imshow(X_dev[:, idx].reshape(28, 28), cmap='gray')
+#     plt.title(f'True: {Y_dev[idx]}, Pred: {predictions_dev[idx]}')
+#     plt.axis('off')
+# plt.show()
