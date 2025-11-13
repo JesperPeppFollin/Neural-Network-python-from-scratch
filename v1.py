@@ -33,10 +33,10 @@ def get_accuracy(predictions, Y):
 
 def init_params():
     # hidden layer 1
-    W1 = np.random.randn(256, 784) # 784 pixels in each image
+    W1 = np.random.randn(256, 784) * np.sqrt(1/784) # 784 pixels in each image
     b1 = np.zeros((256, 1))
     # hidden layer 2
-    W2 = np.random.randn(10, 256)
+    W2 = np.random.randn(10, 256) * np.sqrt(1/256)
     b2 = np.zeros((10, 1))
     return W1, b1, W2, b2
 
