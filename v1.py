@@ -101,40 +101,40 @@ def gradient_descent(X, Y, alpha, iterations):
 
     return W1, b1, W2, b2
 
+def predict(X, W1, b1, W2, b2):
+    _, _, _, A2 = forward_prop(X, W1, b1, W2, b2)
+    predictions = get_predictions(A2)
+    return predictions
 
-# Load MNIST dataset and prepare like the YouTube example
+
+
+# Load MNIST dataset
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
-# Combine features and labels, then shuffle
-m_total = X_train.shape[0]
-X_flat = X_train.reshape(m_total, -1)  # (60000, 784)
-data = np.column_stack((y_train, X_flat))  # (60000, 785) - label in first column
-np.random.shuffle(data)
+# Prepare training data
+m_train = X_train.shape[0]
+X_train_flat = X_train.reshape(m_train, -1).T / 255.0  # (784, 60000)
+Y_train = y_train.astype(int)  # (60000,)
 
-# Split into dev and training sets
-data_dev = data[0:1000].T  # (785, 1000)
-Y_dev = data_dev[0].astype(int)  # (1000,)
-X_dev = data_dev[1:785]  # (784, 1000)
-X_dev = X_dev / 255.0
+# Prepare test data (separate, unseen data)
+m_test = X_test.shape[0]
+X_test_flat = X_test.reshape(m_test, -1).T / 255.0  # (784, 10000)
+Y_test = y_test.astype(int)  # (10000,)
 
-data_train = data[1000:m_total].T  # (785, 59000)
-Y_train = data_train[0].astype(int)  # (59000,)
-X_train = data_train[1:785]  # (784, 59000)
-X_train = X_train / 255.0
+W1, b1, W2, b2 = gradient_descent(X_train_flat, Y_train, 0.01, 10)
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.01, 10)
+predictions = predict(X_test_flat, W1, b1, W2, b2)
+print("Final test set accuracy:", get_accuracy(predictions, Y_test))
 
 
-# using matplotlib to visualize examples of where model is failing
-# Z1_dev, A1_dev, Z2_dev, A2_dev = forward_prop(X_dev, W1, b1, W2, b2)
-# predictions_dev = get_predictions(A2_dev)
-# incorrect_indices = np.where(predictions_dev != Y_dev)[0]
+
+# incorrect_indices = np.where(predictions != Y_test)[0]
 # num_incorrect_to_show = min(5, len(incorrect_indices))
 # plt.figure(figsize=(10, 2))
 # for i in range(num_incorrect_to_show):
 #     idx = incorrect_indices[i]
 #     plt.subplot(1, num_incorrect_to_show, i + 1)
-#     plt.imshow(X_dev[:, idx].reshape(28, 28), cmap='gray')
-#     plt.title(f'True: {Y_dev[idx]}, Pred: {predictions_dev[idx]}')
+#     plt.imshow(X_test_flat[:, idx].reshape(28, 28), cmap='gray')
+#     plt.title(f'True: {Y_test[idx]}, Pred: {predictions[idx]}')
 #     plt.axis('off')
 # plt.show()
