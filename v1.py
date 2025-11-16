@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from keras.datasets import fashion_mnist
 from keras.datasets import mnist
 
 
@@ -107,34 +108,34 @@ def predict(X, W1, b1, W2, b2):
     return predictions
 
 
-
 # Load MNIST dataset
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
+(X_train_fashion, y_train_fashion), (X_test_fashion, y_test_fashion) = fashion_mnist.load_data()
 
 # Prepare training data
 m_train = X_train.shape[0]
-X_train_flat = X_train.reshape(m_train, -1).T / 255.0  # (784, 60000)
-Y_train = y_train.astype(int)  # (60000,)
+X_train_flat = X_train.reshape(m_train, -1).T / 255.0
+Y_train = y_train.astype(int)
 
 # Prepare test data (separate, unseen data)
-m_test = X_test.shape[0]
-X_test_flat = X_test.reshape(m_test, -1).T / 255.0  # (784, 10000)
-Y_test = y_test.astype(int)  # (10000,)
+m_test = X_test_fashion.shape[0]
+X_test_flat = X_test_fashion.reshape(m_test, -1).T / 255.0
+Y_test = y_test_fashion.astype(int)
 
 W1, b1, W2, b2 = gradient_descent(X_train_flat, Y_train, 0.01, 10)
 
 predictions = predict(X_test_flat, W1, b1, W2, b2)
-print("Final test set accuracy:", get_accuracy(predictions, Y_test))
+print("Test set accuracy:", get_accuracy(predictions, Y_test))
 
 
 
-# incorrect_indices = np.where(predictions != Y_test)[0]
-# num_incorrect_to_show = min(5, len(incorrect_indices))
-# plt.figure(figsize=(10, 2))
-# for i in range(num_incorrect_to_show):
-#     idx = incorrect_indices[i]
-#     plt.subplot(1, num_incorrect_to_show, i + 1)
-#     plt.imshow(X_test_flat[:, idx].reshape(28, 28), cmap='gray')
-#     plt.title(f'True: {Y_test[idx]}, Pred: {predictions[idx]}')
-#     plt.axis('off')
-# plt.show()
+incorrect_indices = np.where(predictions != Y_test)[0]
+num_incorrect_to_show = min(5, len(incorrect_indices))
+plt.figure(figsize=(10, 2))
+for i in range(num_incorrect_to_show):
+    idx = incorrect_indices[i]
+    plt.subplot(1, num_incorrect_to_show, i + 1)
+    plt.imshow(X_test_flat[:, idx].reshape(28, 28), cmap='gray')
+    plt.title(f'True: {Y_test[idx]}, Pred: {predictions[idx]}')
+    plt.axis('off')
+plt.show()
